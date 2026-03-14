@@ -116,6 +116,9 @@ namespace PortfolioAI.Repositories
         // -----------------------------
         private async Task<float[]> GenerateEmbedding(string text)
         {
+            if (string.IsNullOrWhiteSpace(text))
+                throw new ArgumentException("Text for embedding cannot be empty.");
+
             var client = new RestClient(
                 $"https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key={_apiKey}");
 
@@ -126,7 +129,22 @@ namespace PortfolioAI.Repositories
             });
 
             var response = await client.ExecuteAsync(request);
+
+            if (!response.IsSuccessful)
+            {
+                Console.WriteLine("[ERROR] Embedding API call failed:");
+                Console.WriteLine(response.Content);
+                throw new HttpRequestException($"Embedding API failed: {response.StatusCode}");
+            }
+
             var result = JsonConvert.DeserializeObject<GeminiEmbeddingResponse>(response.Content);
+
+            // Safe null check
+            if (result == null || result.embedding == null || result.embedding.values == null)
+            {
+                Console.WriteLine("[ERROR] Embedding API returned null embedding.");
+                throw new InvalidOperationException("Failed to get embedding from API.");
+            }
 
             var fullEmbedding = result.embedding.values;
 
