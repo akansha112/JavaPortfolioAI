@@ -25,7 +25,7 @@ namespace PortfolioAI.Repositories
 
             var client = new RestClient(_indexUrl);
             var request = new RestRequest("/query", Method.Post);
-            request.AddHeader("Api-Key", _apiKey);
+            request.AddHeader("Api-Key", _pineCodeKey);
             request.AddHeader("Content-Type", "application/json");
 
             var body = new
@@ -82,7 +82,7 @@ namespace PortfolioAI.Repositories
 
             var client = new RestClient(_indexUrl);
             var request = new RestRequest("/vectors/upsert", Method.Post);
-            request.AddHeader("Api-Key", _apiKey);
+            request.AddHeader("Api-Key", _pineCodeKey);
             request.AddHeader("Content-Type", "application/json");
 
             var vector = new
