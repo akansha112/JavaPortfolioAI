@@ -22,18 +22,15 @@ namespace PortfolioAI.Controllers
         public async Task<IActionResult> UploadResume(IFormFile file)
         {
             if (file == null || file.Length == 0)
-                return BadRequest("Resume file missing");
+                return BadRequest("No file uploaded");
 
-            // Step 1: Extract text from PDF
-            var resumeText = PdfHelper.ExtractText(file);
+            using var stream = new MemoryStream();
+            await file.CopyToAsync(stream);
 
-            if (string.IsNullOrWhiteSpace(resumeText))
-                return BadRequest("Could not extract text from PDF");
+            // Extract text in-memory
+            var resumeText = PdfHelper.ExtractTextFromPdf(stream);
 
-            // Step 2: Index resume dynamically using ResumeDataSeeder
-            await _resumeSeeder.SeedAsync(resumeText);
-
-            // Optional: Also update RAG service (if needed)
+            // Index the resume
             await _ragService.IndexResumeAsync(resumeText);
 
             return Ok(new { message = "Resume indexed successfully" });

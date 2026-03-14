@@ -6,9 +6,12 @@ namespace PortfolioAI.Data
 {
     public class ResumeDataSeeder
     {
-        private readonly string pineconeApiKey = "pcsk_5H7Xge_6VthomV68zx9a4erp2Ep8Wbp3gnvfXGVSuBmRSLH8C9YidY5HBFgGWjcXoamCaR"; // remove tab
-        private readonly string pineconeIndexUrl = "https://ai-portfolio-hk303f0.svc.aped-4627-b74a.pinecone.io";
-        private readonly string geminiApiKey = "AIzaSyBHk9pH8En8nbKbpNM3SHq2H8GCKwsVMzc";
+        //private readonly string pineconeApiKey = "pcsk_5H7Xge_6VthomV68zx9a4erp2Ep8Wbp3gnvfXGVSuBmRSLH8C9YidY5HBFgGWjcXoamCaR"; // remove tab
+        //private readonly string pineconeIndexUrl = "https://ai-portfolio-hk303f0.svc.aped-4627-b74a.pinecone.io";
+        //private readonly string geminiApiKey = "AIzaSyBHk9pH8En8nbKbpNM3SHq2H8GCKwsVMzc";
+        private readonly string _apiKey = Environment.GetEnvironmentVariable("GOOGLE_GEMINI_KEY");
+        private readonly string _indexUrl = Environment.GetEnvironmentVariable("PINECONE_INDEX_URL");
+        private readonly string _pineCodeKey = Environment.GetEnvironmentVariable("PINECONE_NAMESPACE");
 
         public async Task SeedAsync(string resumeText)
         {
@@ -74,7 +77,7 @@ namespace PortfolioAI.Data
             Console.WriteLine("Generating embedding from Gemini...");
 
             var client = new RestClient(
-                $"https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key={geminiApiKey}");
+                $"https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key={_apiKey}");
 
             var request = new RestRequest("", Method.Post);
 
@@ -114,11 +117,11 @@ namespace PortfolioAI.Data
         {
             Console.WriteLine("Uploading vector to Pinecone...");
 
-            var client = new RestClient(pineconeIndexUrl);
+            var client = new RestClient(_indexUrl);
 
             var request = new RestRequest("/vectors/upsert", Method.Post);
 
-            request.AddHeader("Api-Key", pineconeApiKey);
+            request.AddHeader("Api-Key", _pineCodeKey);
             request.AddHeader("Content-Type", "application/json");
 
             var body = new

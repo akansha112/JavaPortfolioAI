@@ -7,9 +7,10 @@ namespace PortfolioAI.Repositories
 {
     public class PineconeRepository : IVectorRepository
     {
-        private readonly string _apiKey = "pcsk_5H7Xge_6VthomV68zx9a4erp2Ep8Wbp3gnvfXGVSuBmRSLH8C9YidY5HBFgGWjcXoamCaR";
-        private readonly string _indexUrl = "https://ai-portfolio-hk303f0.svc.aped-4627-b74a.pinecone.io";
-        private readonly string _geminiKey = "AIzaSyBHk9pH8En8nbKbpNM3SHq2H8GCKwsVMzc";
+        
+        private readonly string _apiKey = Environment.GetEnvironmentVariable("GOOGLE_GEMINI_KEY");
+        private readonly string _indexUrl = Environment.GetEnvironmentVariable("PINECONE_INDEX_URL");
+        private readonly string _pineCodeKey = Environment.GetEnvironmentVariable("PINECONE_NAMESPACE");
         private readonly string _namespace = "resume-akansha"; // consistent namespace
 
         // -----------------------------
@@ -116,7 +117,7 @@ namespace PortfolioAI.Repositories
         private async Task<float[]> GenerateEmbedding(string text)
         {
             var client = new RestClient(
-                $"https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key={_geminiKey}");
+                $"https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key={_apiKey}");
 
             var request = new RestRequest("", Method.Post);
             request.AddJsonBody(new

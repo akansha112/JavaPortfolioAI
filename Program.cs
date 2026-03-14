@@ -32,9 +32,10 @@ builder.Services.AddCors(options =>
 builder.Services.AddHttpClient<GeminiService>();
 builder.Services.AddScoped<IVectorRepository, PineconeRepository>();
 builder.Services.AddScoped<IAIService, GeminiService>();
-builder.Services.AddSingleton(new ChatHistoryRepository(
-    "mongodb+srv://saxenaakansha014_db_user:Ee9fzrZVhUr23IoF@portfolioai.awha7rv.mongodb.net/PortfolioAI?retryWrites=true&w=majority"
-));
+var mongoUri = Environment.GetEnvironmentVariable("MONGO_URI")
+               ?? "mongodb://localhost:27017/PortfolioAI"; // fallback for local
+
+builder.Services.AddSingleton(new ChatHistoryRepository(mongoUri));
 builder.Services.AddScoped<RagService>();
 builder.Services.AddSingleton<ResumeDataSeeder>(); // Seeder injected
 

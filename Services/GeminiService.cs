@@ -6,8 +6,8 @@ namespace PortfolioAI.Services
 {
     public class GeminiService : IAIService
     {
-        private readonly string _apiKey = "AIzaSyBHk9pH8En8nbKbpNM3SHq2H8GCKwsVMzc";
-
+        private readonly string _apiKey = Environment.GetEnvironmentVariable("GOOGLE_GEMINI_KEY");
+        
         public async Task<string> AskAsync(string prompt)
         {
             var client = new RestClient(
