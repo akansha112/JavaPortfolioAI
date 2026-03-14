@@ -57,7 +57,13 @@ app.UseCors("AllowAll");
 app.UseAuthorization();
 
 app.MapControllers();
-var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
-app.Urls.Add($"http://*:{port}");
+
+// Only add this if PORT is set (Render deployment)
+var port = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrEmpty(port))
+{
+    app.Urls.Add($"http://*:{port}");
+}
 
 app.Run();
+
